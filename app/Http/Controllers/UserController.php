@@ -19,6 +19,32 @@ class UserController extends Controller
     }
 
     public function Store(Request $request){
+        $request->validate([
+            'staffId'       => ['required', 'unique:users,staffId'],
+            'password'      => ['required'],
+            'staffName'     => ['required'],
+            'departureName' => ['required'],
+            'position'      => ['required'],
+            'currency'      => ['required'],
+            'salary'        => ['required','numeric'],
+            'phoneNumber'   => ['required'],
+            'resume'          => ['file', 'max:5120 ', 'required']
+        ],[
+            'staffId.required'      => 'Mohon masukkan field Staff Id',
+            'staffId.unique'        => 'Staff Id telah digunakan',
+            'password.required'     => 'Mohon masukkan field password',
+            'staffName.required'     => 'Mohon masukkan field Staff Name',
+            'departureName.required'     => 'Mohon masukkan field departureName',
+            'position.required'     => 'Mohon masukkan field position',
+            'currency.required'     => 'Mohon masukkan field currency',
+            'salary.required'     => 'Mohon masukkan field salary',
+            'salary.numeric'     => 'Field salary berupa angka',
+            'phoneNumber.required'     => 'Mohon masukkan field Phone Number',
+            'resume.image'        => 'Masukkan file dengan type gambar',
+            'resume.max'          => 'Maksimum file 5120  KB',
+            'resume.required'     => 'Mohon masukkan resume'
+        ]);
+
         $resume = $request->file('resume');
         $path = 'public/resume/' . $request->get('name') . '/';
         $store = $resume->storeAs($path, $resume->getClientOriginalName());
@@ -37,7 +63,7 @@ class UserController extends Controller
                 'position'          => $request->get('position'),
                 'currency'          => $request->get('currency'),
                 'salary'            => $request->get('salary'),
-                'phoneNumber'            => $request->get('phoneNumber'),
+                'phoneNumber'       => $request->get('phoneNumber'),
                 'role'              => 2,
                 'resume'            => $link
             ]
@@ -49,6 +75,44 @@ class UserController extends Controller
     public function Edit($id){
         $user = User::where('id', $id)->first();
         return view('pages.usersEdit',compact('user'));
+    }
+
+    public function Update(Request $request, $id){
+        $request->validate([
+            'staffId'       => ['required', 'unique:users,staffId,'.$id,],
+            'staffName'     => ['required'],
+            'departureName' => ['required'],
+            'position'      => ['required'],
+            'currency'      => ['required'],
+            'salary'        => ['required','numeric'],
+            'phoneNumber'   => ['required'],
+        ],[
+            'staffId.required'      => 'Mohon masukkan field Staff Id',
+            'staffId.unique'        => 'Staff Id telah digunakan',
+            'staffName.required'     => 'Mohon masukkan field Staff Name',
+            'departureName.required'     => 'Mohon masukkan field departureName',
+            'position.required'     => 'Mohon masukkan field position',
+            'currency.required'     => 'Mohon masukkan field currency',
+            'salary.required'     => 'Mohon masukkan field salary',
+            'salary.numeric'     => 'Field salary berupa angka',
+            'phoneNumber.required'     => 'Mohon masukkan field Phone Number',
+        ]);
+
+        User::where('id', $id)->update(
+            [
+                'email'             => $request->get('email'),
+                'password'          => bcrypt($request->get('password')),
+                'staffId'           => $request->get('staffId'),
+                'staffName'         => $request->get('staffName'),
+                'departureName'     => $request->get('departureName'),
+                'position'          => $request->get('position'),
+                'currency'          => $request->get('currency'),
+                'salary'            => $request->get('salary'),
+                'phoneNumber'            => $request->get('phoneNumber'),
+            ]
+        );
+
+        return redirect()->route('users.index');
     }
 
     public function destroy($id)
