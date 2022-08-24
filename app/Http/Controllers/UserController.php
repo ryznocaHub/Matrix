@@ -20,29 +20,37 @@ class UserController extends Controller
 
     public function Store(Request $request){
         $request->validate([
+            'email'         => ['required', 'unique:users,email','email', 'regex:/^.+@.\.\w+$/i'],
             'staffId'       => ['required', 'unique:users,staffId'],
-            'password'      => ['required'],
+            'password'      => ['required', 'min:6'],
             'staffName'     => ['required'],
             'departureName' => ['required'],
             'position'      => ['required'],
             'currency'      => ['required'],
             'salary'        => ['required','numeric'],
             'phoneNumber'   => ['required'],
-            'resume'          => ['file', 'max:5120 ', 'required']
+            'resume'        => ['file', 'max:5120 ', 'required', 'mimes:pdf']
         ],[
-            'staffId.required'      => 'Mohon masukkan field Staff Id',
-            'staffId.unique'        => 'Staff Id telah digunakan',
-            'password.required'     => 'Mohon masukkan field password',
-            'staffName.required'     => 'Mohon masukkan field Staff Name',
-            'departureName.required'     => 'Mohon masukkan field departureName',
-            'position.required'     => 'Mohon masukkan field position',
-            'currency.required'     => 'Mohon masukkan field currency',
-            'salary.required'     => 'Mohon masukkan field salary',
-            'salary.numeric'     => 'Field salary berupa angka',
-            'phoneNumber.required'     => 'Mohon masukkan field Phone Number',
-            'resume.image'        => 'Masukkan file dengan type gambar',
-            'resume.max'          => 'Maksimum file 5120  KB',
-            'resume.required'     => 'Mohon masukkan resume'
+            'email.required'            => 'Mohon masukkan field Email',
+            'email.unique'              => 'Email telah digunakan',
+            'email.email'               => 'Masukkan email dengan benar',
+            'email.regex'               => 'Masukkan email dengan benar',
+            'password.required'         => 'Mohon masukkan field password',
+            'password.min'              => 'Jumlah karakter password harus lebih dari 6',
+            'staffId.required'          => 'Mohon masukkan field Staff Id',
+            'staffId.unique'            => 'Staff Id telah digunakan',
+            'password.required'         => 'Mohon masukkan field password',
+            'staffName.required'        => 'Mohon masukkan field Staff Name',
+            'departureName.required'    => 'Mohon masukkan field departureName',
+            'position.required'         => 'Mohon masukkan field position',
+            'currency.required'         => 'Mohon masukkan field currency',
+            'salary.required'           => 'Mohon masukkan field salary',
+            'salary.numeric'            => 'Field salary berupa angka',
+            'phoneNumber.required'      => 'Mohon masukkan field Phone Number',
+            'resume.file'               => 'Masukkan file dengan type .pdf',
+            'resume.mimes'              => 'Masukkan file dengan type .pdf',
+            'resume.max'                => 'Maksimum file 5120  KB',
+            'resume.required'           => 'Mohon masukkan resume'
         ]);
 
         $resume = $request->file('resume');
@@ -79,6 +87,7 @@ class UserController extends Controller
 
     public function Update(Request $request, $id){
         $request->validate([
+            'email'         => ['required', 'unique:users,email,'.$id,'email', 'regex:/^.+@.\.\w+$/i'],
             'staffId'       => ['required', 'unique:users,staffId,'.$id,],
             'staffName'     => ['required'],
             'departureName' => ['required'],
@@ -87,6 +96,10 @@ class UserController extends Controller
             'salary'        => ['required','numeric'],
             'phoneNumber'   => ['required'],
         ],[
+            'email.required'            => 'Mohon masukkan field Email',
+            'email.unique'              => 'Email telah digunakan',
+            'email.email'               => 'Masukkan email dengan benar',
+            'email.regex'               => 'Masukkan email dengan benar',
             'staffId.required'      => 'Mohon masukkan field Staff Id',
             'staffId.unique'        => 'Staff Id telah digunakan',
             'staffName.required'     => 'Mohon masukkan field Staff Name',
